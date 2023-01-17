@@ -42,6 +42,31 @@ int	main(void)
 	return (0);
 }
 
+// #include "get_next_line.h"
+// #include <fcntl.h>
+// #include <stdio.h>
+
+// int	main(void)
+// {
+// 	int	fd;
+// 	int i = 0;
+// 	char *str;
+
+// 	fd = open("a.txt", O_RDONLY);
+// 	if (fd == -1)
+// 		return (-1);
+// 	str = malloc(sizeof(char));
+// 	*str = 'q';
+// 	while(str)
+// 	{
+// 		str = get_next_line(0);//42, etc
+// 		printf("line[%d] : %s", i, str);
+// 		i++;		
+// 	}
+// 	system("leaks -q a.out");
+// 	return (0);
+// }
+
 // int	main(void)
 // {
 // 	int		fd;
