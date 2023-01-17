@@ -1,6 +1,6 @@
 # get_next_line
 
-recommended testers 2023
+recommended testers 2023 Jan
 
 1. https://github.com/Tripouille/gnlTester \
 2. https://github.com/kodpe/gnl-station-tester \
