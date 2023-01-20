@@ -1,5 +1,7 @@
-SRCS	=	get_next_line.c	\
-			get_next_line_utils.c
+SRCS_	=	get_next_line	\
+			get_next_line_utils
+
+SRCS	=	$(addsuffix .c, $(SRCS_))
 
 OBJS	=	$(SRCS:.c=.o)
 
@@ -14,6 +16,7 @@ RM		=	rm -f
 AR		=	ar -rcs
 OUT		=	a.out
 MAIN	=	main.c
+HFILE	=	get_next_line.h
 
 $(NAME)	:	$(OBJS)
 			$(AR) $(NAME) $(OBJS)
@@ -33,16 +36,18 @@ oclean	:	fclean
 			$(RM) $(OUT)
 
 re		:	fclean all
-ore		:	fclean out
+ore		:	oclean out
 
 norm	:	
-			@norminette get_next_line.h $(SRCS)
+			@norminette $(HFILE) $(SRCS)
 normd	:
-			@norminette -R CheckDefine get_next_line.h $(SRCS)
+			@norminette -R CheckDefine $(HFILE) $(SRCS)
 normf	:
-			@norminette -R CheckForbiddenSourceHeader get_next_line.h $(SRCS)
+			@norminette -R CheckForbiddenSourceHeader $(HFILE) $(SRCS)
+norma	:	norm normd normf
+
 commit	:	fclean
-			git add .
+			git add $(SRCS) $(HFILE)
 			git commit -m "commit through Makefile"
 			git log
 

@@ -3,16 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yuske <yuske@student.42.fr>                +#+  +:+       +#+        */
+/*   By: yfurutat <yfurutat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/09 13:58:09 by yuske             #+#    #+#             */
-/*   Updated: 2023/01/18 01:56:23 by yuske            ###   ########.fr       */
+/*   Updated: 2023/01/20 18:02:15 by yfurutat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <fcntl.h>
 #include <errno.h>
+#include <stdio.h>
+#include <string.h>
 
 // #define BUF_SIZE 512
 
@@ -22,6 +24,7 @@ int	main(void)
 	char	*line;
 
 	fd = open("check.txt", O_RDONLY);
+	fd = open("circleratio1.txt", O_RDONLY);
 	// fd = open("sample08.txt", O_RDONLY);
 	if (fd == -1)
 	{

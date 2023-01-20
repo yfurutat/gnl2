@@ -3,21 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yuske <yuske@student.42.fr>                +#+  +:+       +#+        */
+/*   By: yfurutat <yfurutat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/30 20:07:31 by yuske             #+#    #+#             */
-/*   Updated: 2023/01/18 01:37:11 by yuske            ###   ########.fr       */
+/*   Updated: 2023/01/20 20:28:11 by yfurutat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
+static void	id_initializer(t_id *id);
 static char	*read_and_save(int fd, char *save, t_id *id);
 static char	*line_arranger(char *save, t_id *id);
 static char	*save_the_rest(char *save, t_id *id);
-static void	id_initializer(t_id *id);
 
 //13L
+/**
+ * @brief Get the lines from fd by the BUFFER_SIZE,
+ * 			and arrange them with '\n' if needed.
+ * 
+ * @param fd : file descriptor number from which to read lines.
+ * @return char* : line created through line_arranger().
+ * @note you might need to use open() and close() in main().
+ */
 char	*get_next_line(int fd)
 {
 	static char	*save;
@@ -35,6 +43,11 @@ char	*get_next_line(int fd)
 	return (line_to_print);
 }
 
+/**
+ * @brief initialize all the elements in the struct.
+ * 
+ * @param id the struct contains index to make funcs more concise & go easier.
+ */
 static void	id_initializer(t_id *id)
 {
 	id->terminal = '\0';
@@ -44,6 +57,18 @@ static void	id_initializer(t_id *id)
 }
 
 //22L
+/**
+ * @brief read lines from the fd by the BUFFER_SIZE,
+ * 			and put them into *buf, before copying them into save.
+ * 			if any lines remain in *save, put them before the new lines
+ * 			into save and combine them altogether.
+ * 
+ * @param fd file descriptor given through the input of g_n_l()
+ * @param save if a line remains after the last process, 
+ * 				it is carried over in this array.
+ * @param id set of index, including rd_len
+ * @return char* 
+ */
 static char	*read_and_save(int fd, char *save, t_id *id)
 {
 	char	*buf;
@@ -71,12 +96,20 @@ static char	*read_and_save(int fd, char *save, t_id *id)
 }
 
 //21L
+/**
+ * @brief create the actual line to output, out of *save.
+ * 
+ * @param save array saved in the previous func.
+ * @param id set of index, including len and i.
+ * @return char* line created through this func, 
+ * 			which will be returned in the end of g_n_l(), too.
+ */
 static char	*line_arranger(char *save, t_id *id)
 {
 	char	*line;
 
 	id->i = 0;
-	if (!save[id->i])
+	if (save[id->i] == '\0' || save == NULL)
 		return (NULL);
 	id->len = 0;
 	while (save[id->len] != id->terminal)
@@ -85,7 +118,7 @@ static char	*line_arranger(char *save, t_id *id)
 		line = (char *)malloc(sizeof(char) * (id->len + 2));
 	else
 		line = (char *)malloc(sizeof(char) * (id->len + 1));
-	if (!line)
+	if (line == NULL)
 		free(save);
 	else
 	{
@@ -94,12 +127,22 @@ static char	*line_arranger(char *save, t_id *id)
 			line[id->i] = save[id->i];
 			id->i += 1;
 		}
-		line[id->i] = '\0';
+		if (id->terminal == '\n')
+			line[id->i] = '\0';
 	}
 	return (line);
 }
 
 //17L
+/**
+ * @brief if the line saved in *save contains any '\n',
+ * 			this func keep the rest after creating the line
+ * 			in the previous func.
+ * @param save array saved and carried over.
+ * @param id set of index including len and i.
+ * @return char* the rest of the lines saved 
+ * 			after creating the line to output.
+ */
 static char	*save_the_rest(char *save, t_id *id)
 {
 	char	*for_next;
