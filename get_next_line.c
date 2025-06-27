@@ -12,6 +12,10 @@
 
 #include "get_next_line.h"
 
+// # ifndef BUFFER_SIZE
+// #  define BUFFER_SIZE (size_t)(1000)
+// # endif
+
 static void	id_initializer(t_id *id);
 static char	*read_and_save(int fd, char *save, t_id *id);
 static char	*line_arranger(char *save, t_id *id);
@@ -28,18 +32,27 @@ static char	*save_the_rest(char *save, t_id *id);
  */
 char	*get_next_line(int fd)
 {
-	static char	*save;
+	static char	*saved;
+	char		*jointed;
 	char		*line_to_print;
-	t_id		id;
+	bool		next_line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	id_initializer(&id);
-	save = read_and_save(fd, save, &id);
-	if (!save)
+	jointed = read_and_joint(fd, saved, &next_line);
+	if (!jointed)
+	{
+		free(saved);
 		return (NULL);
-	line_to_print = line_arranger(save, &id);
-	save = save_the_rest(save, &id);
+	}
+	line_to_print = line_arranger(jointed, &next_line);
+	if (!line_to_print)
+	{
+		free(saved);
+		free(jointed);
+		return (NULL);
+	}
+	saved = save_the_rest(jointed, &next_line);
 	return (line_to_print);
 }
 
@@ -71,19 +84,19 @@ static void	id_initializer(t_id *id)
  */
 static char	*read_and_save(int fd, char *save, t_id *id)
 {
-	char	*buf;
+	char	buf[BUFFER_SIZE];
+	char	*tmp;
 
-	buf = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1UL);
-	if (!buf)
-		return (NULL);
-	id->rd_len = 1;
 	while (1)
 	{
-		id->rd_len = read(fd, buf, BUFFER_SIZE);
-		if (id->rd_len <= 0)
-			break ;
-		buf[id->rd_len] = '\0';
-		save = ft_strjoin(save, buf);
+		bzero(buf, BUFFER_SIZE);
+		if (read(fd, buf, BUFFER_SIZE) == -1)
+			return (NULL);
+		tmp = ft_strjoin(save, buf);
+		free(save);
+		if (tmp == NULL)
+			return (NULL);
+		save = ft_strdup(tmp);
 		if (save == NULL || ft_strchr(save, '\n') != NULL)
 			break ;
 	}
@@ -94,6 +107,32 @@ static char	*read_and_save(int fd, char *save, t_id *id)
 		id->terminal = '\n';
 	return (save);
 }
+
+// static char	*read_and_save(int fd, char *save, t_id *id)
+// {
+// 	char	*buf;
+
+// 	buf = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1UL);
+// 	if (!buf)
+// 		return (NULL);
+// 	id->rd_len = 1;
+// 	while (1)
+// 	{
+// 		id->rd_len = read(fd, buf, BUFFER_SIZE);
+// 		if (id->rd_len <= 0)
+// 			break ;
+// 		buf[id->rd_len] = '\0';
+// 		save = ft_strjoin(save, buf);
+// 		if (save == NULL || ft_strchr(save, '\n') != NULL)
+// 			break ;
+// 	}
+// 	free(buf);
+// 	if (id->rd_len == -1)
+// 		return (NULL);
+// 	else if (ft_strchr(save, '\n') != NULL)
+// 		id->terminal = '\n';
+// 	return (save);
+// }
 
 //21L
 /**
