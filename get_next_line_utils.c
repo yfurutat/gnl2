@@ -62,9 +62,9 @@ ssize_t	strnchrlen(const char *str, ssize_t n, int chr)
 	len = 0;
 	while (len < n)
 	{
-		if ((unsigned char)str[i] == (unsigned char)chr)
+		if ((unsigned char)str[len] == (unsigned char)chr)
 			return (len);
-		if (chr != '\0' && str[len] == '\0')
+		if ((unsigned char)chr != '\0' && str[len] == '\0')
 			return NOT_FOUND;
 		len += 1;
 	}
