@@ -12,28 +12,63 @@
 
 #include "get_next_line.h"
 
-// 8L
-char	*ft_strchr(char *str, int chr)
-{
-	if (str != NULL)
-	{
-		while (*str != (unsigned char)chr && *str != '\0')
-			str++;
-		if (*str == (unsigned char)chr)
-			return ((char *)str);
-	}
-	return (NULL);
-}
+// // 8L
+// char	*ft_strchr(char *str, int chr)
+// {
+// 	if (str != NULL)
+// 	{
+// 		while (*str != (unsigned char)chr && *str != '\0')
+// 			str++;
+// 		if (*str == (unsigned char)chr)
+// 			return ((char *)str);
+// 	}
+// 	return (NULL);
+// }
 
-//6L
-size_t	ft_strlen(const char *str)
-{
-	size_t	len;
+// //6L
+// size_t	ft_strlen(const char *str)
+// {
+// 	size_t	len;
 
+// 	len = 0;
+// 	while (str != NULL && str[len] != '\0')
+// 		len += 1;
+// 	return (len);
+// }
+
+#include <stdbool.h> //bool
+#include <stdio.h> // ssize_t (#include <stdlib.h> でもOK)
+#include <limits.h> // SSIZE_MAX
+
+// #define NOT_FOUND (-1)
+// #define NOT_LOOKED (-2)
+// #define NULL_PTR (-3)
+
+typedef enum s_error_type
+{
+	NOT_FOUND = -1,
+	NOT_LOOKED = -2,
+	NULL_PTR = -3
+}	t_err;
+
+ssize_t	strnchrlen(const char *str, ssize_t n, int chr)
+{
+	ssize_t	len;
+
+	if (str == NULL)
+		return NULL_PTR;
+	if (n < 1)
+		return NOT_LOOKED;
 	len = 0;
-	while (str != NULL && str[len] != '\0')
+	while (len < n)
+	{
+		if ((unsigned char)str[i] == (unsigned char)chr)
+			return (len);
+		if (chr != '\0' && str[len] == '\0')
+			return NOT_FOUND;
 		len += 1;
-	return (len);
+	}
+	return NOT_FOUND;
 }
 
 //16L
