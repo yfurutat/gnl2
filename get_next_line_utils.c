@@ -60,14 +60,14 @@ ssize_t	strnchrlen(const char *str, ssize_t n, int chr)
 	if (n < 1)
 		return NOT_LOOKED;
 	len = 0;
-	while (len < n)
+	while (len < n && str[len] != '\0')
 	{
 		if ((unsigned char)str[len] == (unsigned char)chr)
 			return (len);
-		if ((unsigned char)chr != '\0' && str[len] == '\0')
-			return NOT_FOUND;
 		len += 1;
 	}
+	if ((unsigned char)chr == '\0' && str[len] == '\0')
+		return (len);
 	return NOT_FOUND;
 }
 
