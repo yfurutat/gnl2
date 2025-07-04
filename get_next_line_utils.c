@@ -85,13 +85,19 @@ char	*ft_calloc_for_str(size_t num_bytes_to_allocate)
 	return (tmp);
 }
 
-bool	free_null_str(char **str)
+char	*double_free_null_str(char **str1, char **str2)
 {
-	if (str == NULL || *str == NULL)
-		return (false);
-	free(*str);
-	*str = NULL;
-	return (true);
+	if (str1 && *str1)
+	{
+		free(*str1);
+		*str1 = NULL;
+	}
+	if (str2 && *str2)
+	{
+		free(*str2);
+		*str2 = NULL;
+	}
+	return (NULL);
 }
 
 //16L
