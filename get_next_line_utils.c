@@ -51,16 +51,14 @@ typedef enum s_error_type
 	NULL_PTR = -3
 }	t_err;
 
-ssize_t	strnchrlen(const char *str, ssize_t n, int chr)
+ssize_t	strchrlen(const char *str, int chr)
 {
 	ssize_t	len;
 
 	if (str == NULL)
-		return NULL_PTR;
-	if (n < 1)
-		return NOT_LOOKED;
+		return (NULL_PTR);
 	len = 0;
-	while (len < n && str[len] != '\0')
+	while (str[len] != '\0')
 	{
 		if ((unsigned char)str[len] == (unsigned char)chr)
 			return (len);
@@ -68,8 +66,26 @@ ssize_t	strnchrlen(const char *str, ssize_t n, int chr)
 	}
 	if ((unsigned char)chr == '\0' && str[len] == '\0')
 		return (len);
-	return NOT_FOUND;
+	return (NOT_FOUND);
 }
+
+char	*calloc_for_str(size_t num_bytes_to_allocate)
+{
+	char	*tmp;
+
+	if (num_bytes_to_allocate == 0)
+		num_bytes_to_allocate = 1;
+	tmp = (char *)malloc(sizeof(char) * num_bytes_to_allocate);
+	if (tmp == NULL)
+	{
+		errno = ENOMEM;
+		return (NULL);
+	}
+	ft_bzero(tmp, num_bytes_to_allocate);
+	return (tmp);
+}
+
+
 
 //16L
 char	*ft_strdup(const char *str)
