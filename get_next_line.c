@@ -42,21 +42,14 @@ char	*get_next_line(int fd)
 	next_line = -1;
 	jointed = read_and_joint(fd, saved, &next_line);
 	if (!jointed)
-	{
-		free_null_str(&saved);
-		return (NULL);
-	}
+		return (double_free_null_str(&saved, NULL));
 	line_to_print = arrange_line(jointed, &next_line);
 	if (!line_to_print)
-	{
-		free_null_str(&saved);
-		free_null_str(&jointed);
-		return (NULL);
-	}
+		return (double_free_null_str(&saved, &jointed));
 	saved = save_the_rest(jointed, &next_line);
 	if (!saved)
-		free_null_str(&line_to_print);
-	free_null_str(&jointed);
+		return (double_free_null_str(&line_to_print, &jointed));
+	double_free_null_str(NULL, &jointed);
 	return (line_to_print);
 }
 
