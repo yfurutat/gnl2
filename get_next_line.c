@@ -35,24 +35,28 @@ char	*get_next_line(int fd)
 	static char	*saved;
 	char		*jointed;
 	char		*line_to_print;
-	bool		next_line;
+	ssize_t		next_line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
+	next_line = -1;
 	jointed = read_and_joint(fd, saved, &next_line);
 	if (!jointed)
 	{
-		free(saved);
+		free_null_str(&saved);
 		return (NULL);
 	}
 	line_to_print = arrange_line(jointed, &next_line);
 	if (!line_to_print)
 	{
-		free(saved);
-		free(jointed);
+		free_null_str(&saved);
+		free_null_str(&jointed);
 		return (NULL);
 	}
 	saved = save_the_rest(jointed, &next_line);
+	if (!saved)
+		free_null_str(&line_to_print);
+	free_null_str(&jointed);
 	return (line_to_print);
 }
 
