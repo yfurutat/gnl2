@@ -51,7 +51,7 @@ typedef enum s_error_type
 	NULL_PTR = -3
 }	t_err;
 
-ssize_t	strchrlen(const char *str, int chr)
+ssize_t	ft_strchrlen(const char *str, int chr)
 {
 	ssize_t	len;
 
@@ -69,7 +69,7 @@ ssize_t	strchrlen(const char *str, int chr)
 	return (NOT_FOUND);
 }
 
-char	*calloc_for_str(size_t num_bytes_to_allocate)
+char	*ft_calloc_for_str(size_t num_bytes_to_allocate)
 {
 	char	*tmp;
 
@@ -109,17 +109,17 @@ char	*ft_strdup(const char *str)
 }
 
 //22L
-char	*ft_strjoin(char *str1, char *str2)
+char	*ft_strjoin(char *old_str, const char *arr)
 {
 	char	*nu_str;
 	size_t	i;
 	size_t	j;
 
-	if (!str1)
-		str1 = ft_strdup("");
-	if (!str1 || !str2)
+	if (!old_str)
+		old_str = ft_calloc_for_str(1);
+	if (!old_str || !arr)
 		return (NULL);
-	nu_str = (char *)malloc(ft_strlen(str1) + ft_strlen(str2) + 1);
+	nu_str = ft_calloc_for_str(ft_strchrlen(old_str, '\0') + ft_strchrlen(arr, '\0') + 1);
 	if (nu_str)
 	{
 		i = 0;
@@ -131,7 +131,7 @@ char	*ft_strjoin(char *str1, char *str2)
 			nu_str[i++] = str2[j++];
 		nu_str[i] = '\0';
 	}
-	free(str1);
+	free(old_str);
 	return (nu_str);
 }
 	// i = ft_strlen(str1);
