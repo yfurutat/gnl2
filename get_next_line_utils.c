@@ -85,7 +85,14 @@ char	*ft_calloc_for_str(size_t num_bytes_to_allocate)
 	return (tmp);
 }
 
-
+bool	free_null_str(char **str)
+{
+	if (str == NULL || *str == NULL)
+		return (false);
+	free(*str);
+	*str = NULL;
+	return (true);
+}
 
 //16L
 char	*ft_strdup(const char *str)
@@ -131,7 +138,7 @@ char	*ft_strjoin(char *old_str, const char *arr)
 			nu_str[i++] = str2[j++];
 		nu_str[i] = '\0';
 	}
-	free(old_str);
+	free_null_str(&old_str);
 	return (nu_str);
 }
 	// i = ft_strlen(str1);
