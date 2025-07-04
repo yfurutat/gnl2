@@ -43,6 +43,7 @@ char	*get_next_line(int fd)
 	jointed = read_and_joint(fd, saved, &next_line);
 	if (!jointed)
 		return (double_free_null_str(&saved, NULL));
+	double_free_null_str(&saved, NULL);
 	line_to_print = arrange_line(jointed, &next_line);
 	if (!line_to_print)
 		return (double_free_null_str(&saved, &jointed));
@@ -79,7 +80,7 @@ static void	id_initializer(t_id *id)
  * @param id set of index, including rd_len
  * @return char* 
  */
-static char	*read_and_save(int fd, char *save, t_id *id)
+static char	*read_and_save(int fd, char *saved, t_id *id)
 {
 	char	buf[BUFFER_SIZE];
 	char	*tmp;
@@ -89,12 +90,11 @@ static char	*read_and_save(int fd, char *save, t_id *id)
 		bzero(buf, BUFFER_SIZE);
 		if (read(fd, buf, BUFFER_SIZE) == -1)
 			return (NULL);
-		tmp = ft_strjoin(save, buf);
-		free(save);
-		if (tmp == NULL)
-			return (NULL);
-		save = ft_strdup(tmp);
-		if (save == NULL || ft_strchr(save, '\n') != NULL)
+		saved = ft_strjoin(saved, buf);
+		if (saved == NULL)
+			break ;
+		*next_line = ft_strchrlen(saved, '\n');
+		if (*next_line >= 0)
 			break ;
 	}
 	free(buf);
