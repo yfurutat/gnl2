@@ -17,9 +17,9 @@
 // # endif
 
 static void	id_initializer(t_id *id);
-static char	*read_and_save(int fd, char *save, t_id *id);
-static char	*line_arranger(char *save, t_id *id);
-static char	*save_the_rest(char *save, t_id *id);
+static char	*read_and_save(int fd, char *saved, t_id *id);
+static char	*line_arranger(char *jointed, t_id *id);
+static char	*save_the_rest(char *jointed, t_id *id);
 
 //13L
 /**
@@ -45,7 +45,7 @@ char	*get_next_line(int fd)
 		free(saved);
 		return (NULL);
 	}
-	line_to_print = line_arranger(jointed, &next_line);
+	line_to_print = arrange_line(jointed, &next_line);
 	if (!line_to_print)
 	{
 		free(saved);
