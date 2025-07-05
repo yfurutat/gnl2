@@ -92,7 +92,7 @@ static char	*read_and_save(int fd, char *saved, t_id *id)
 		read_len = read(fd, buf, BUFFER_SIZE);
 		if (read_len == -1)
 			return (NULL);
-		if (read_len == 0)
+		else if (read_len == 0)
 			return (saved);
 		saved = ft_strjoin(saved, buf);
 		if (saved == NULL)
