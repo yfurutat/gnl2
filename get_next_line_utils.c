@@ -47,8 +47,7 @@
 typedef enum s_error_type
 {
 	NOT_FOUND = -1,
-	NOT_LOOKED = -2,
-	NULL_PTR = -3
+	NULL_PTR = -2
 }	t_err;
 
 ssize_t	ft_strchrlen(const char *str, int chr)
