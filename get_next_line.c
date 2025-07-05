@@ -87,7 +87,7 @@ static char	*read_and_save(int fd, char *saved, t_id *id)
 
 	while (1)
 	{
-		bzero(buf, BUFFER_SIZE);
+		ft_bzero(buf, BUFFER_SIZE);
 		if (read(fd, buf, BUFFER_SIZE) == -1)
 			return (NULL);
 		saved = ft_strjoin(saved, buf);
@@ -97,12 +97,35 @@ static char	*read_and_save(int fd, char *saved, t_id *id)
 		if (*next_line >= 0)
 			break ;
 	}
-	free(buf);
 	if (id->rd_len == -1)
 		return (NULL);
 	else if (ft_strchr(save, '\n') != NULL)
 		id->terminal = '\n';
 	return (save);
+}
+
+//22L
+char	*ft_strjoin(char *old_str, const char *arr)
+{
+	char	*nu_str;
+	size_t	old_str_len;
+	size_t	arr_len;
+
+	if (!old_str)
+		old_str = ft_calloc_for_str(1);
+	if (!old_str || !arr)
+		return (NULL);
+	old_str_len = ft_strchrlen(old_str, '\0');
+	arr_len = ft_strchrlen(arr, '\0');
+	if (old_str_len > SIZE_MAX - arr_len - 1)
+		return (double_free_null_str(&old_str, NULL));
+	nu_str = ft_calloc_for_str(old_str_len + arr_len + 1);
+	if (!nu_str)
+		return (double_free_null_str(&old_str, NULL));
+	iter_copy_src_to_dest(nu_str, old_str, old_str_len);
+	iter_copy_src_to_dest(&nu_str[old_str_len], arr, arr_len);
+	double_free_null_str(&old_str, NULL);
+	return (nu_str);
 }
 
 // static char	*read_and_save(int fd, char *save, t_id *id)
