@@ -69,6 +69,21 @@ ssize_t	ft_strchrlen(const char *str, int chr)
 	return (NOT_FOUND);
 }
 
+void	*ft_bzero(void *mem, int chr, size_t num_bytes_to_set_zero)
+{
+	unsigned char	*mem_caster;
+	size_t			i;
+
+	i = 0;
+	mem_caster = (unsigned char *)mem;
+	while (i < num_bytes_to_set_zero)
+	{
+		mem_caster[i] = (unsigned char)'\0';
+		i += 1;
+	}
+	return (mem);
+}
+
 char	*ft_calloc_for_str(size_t num_bytes_to_allocate)
 {
 	char	*tmp;
