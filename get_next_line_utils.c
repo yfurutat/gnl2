@@ -63,12 +63,12 @@ ssize_t	ft_strchrlen(const char *str, int chr)
 			return (len);
 		len += 1;
 	}
-	if ((unsigned char)chr == '\0' && str[len] == '\0')
+	if ((unsigned char)chr == '\0')
 		return (len);
 	return (NOT_FOUND);
 }
 
-void	*ft_bzero(void *mem, int chr, size_t num_bytes_to_set_zero)
+void	*ft_bzero(void *mem, size_t num_bytes_to_set_zero)
 {
 	unsigned char	*mem_caster;
 	size_t			i;
@@ -77,7 +77,7 @@ void	*ft_bzero(void *mem, int chr, size_t num_bytes_to_set_zero)
 	mem_caster = (unsigned char *)mem;
 	while (i < num_bytes_to_set_zero)
 	{
-		mem_caster[i] = (unsigned char)'\0';
+		mem_caster[i] = '\0';
 		i += 1;
 	}
 	return (mem);
@@ -114,53 +114,88 @@ char	*double_free_null_str(char **str1, char **str2)
 	return (NULL);
 }
 
-//16L
-char	*ft_strdup(const char *str)
+void	iter_copy_src_to_dest(char *dest, const char *src, size_t end)
 {
-	char	*dup;
 	size_t	i;
 
-	if (str == NULL)
-		return (NULL);
-	dup = (char *)malloc(sizeof(char) * ft_strlen(str) + 1);
-	if (!dup)
-		return (NULL);
 	i = 0;
-	while (str[i] != '\0')
+	while (end > i + 1 && src[i] != '\0')
 	{
-		dup[i] = str[i];
-		i++;
+		dest[i] = src[i];
+		i += 1;
 	}
-	dup[i] = '\0';
-	return (dup);
 }
 
 //22L
 char	*ft_strjoin(char *old_str, const char *arr)
 {
 	char	*nu_str;
-	size_t	i;
-	size_t	j;
+	size_t	old_str_len;
+	size_t	arr_len;
 
 	if (!old_str)
 		old_str = ft_calloc_for_str(1);
 	if (!old_str || !arr)
 		return (NULL);
-	nu_str = ft_calloc_for_str(ft_strchrlen(old_str, '\0') + ft_strchrlen(arr, '\0') + 1);
-	if (nu_str)
-	{
-		i = 0;
-		j = 0;
-		while (str1[j] != '\0')
-			nu_str[i++] = str1[j++];
-		j = 0;
-		while (str2[j] != '\0')
-			nu_str[i++] = str2[j++];
-		nu_str[i] = '\0';
-	}
-	free_null_str(&old_str);
+	old_str_len = ft_strchrlen(old_str, '\0');
+	arr_len = ft_strchrlen(arr, '\0');
+	if (old_str_len > SIZE_MAX - arr_len - 1)
+		return (double_free_null_str(&old_str, NULL));
+	nu_str = ft_calloc_for_str(old_str_len + arr_len + 1);
+	if (!nu_str)
+		return (double_free_null_str(&old_str, NULL));
+	iter_copy_src_to_dest(nu_str, old_str, old_str_len);
+	iter_copy_src_to_dest(&nu_str[old_str_len], arr, arr_len);
+	double_free_null_str(&old_str, NULL);
 	return (nu_str);
 }
-	// i = ft_strlen(str1);
-	// j = ft_strlen(str2);
-		// nu_str = strcpy(nu_str, str1);
+
+//16L
+// char	*ft_strdup(const char *str)
+// {
+// 	char	*dup;
+// 	size_t	i;
+
+// 	if (str == NULL)
+// 		return (NULL);
+// 	dup = (char *)malloc(sizeof(char) * ft_strlen(str) + 1);
+// 	if (!dup)
+// 		return (NULL);
+// 	i = 0;
+// 	while (str[i] != '\0')
+// 	{
+// 		dup[i] = str[i];
+// 		i++;
+// 	}
+// 	dup[i] = '\0';
+// 	return (dup);
+// }
+
+// char	*ft_strjoin(char *old_str, const char *arr)
+// {
+// 	char	*nu_str;
+// 	size_t	i;
+// 	size_t	j;
+
+// 	if (!old_str)
+// 		old_str = ft_calloc_for_str(1);
+// 	if (!old_str || !arr)
+// 		return (NULL);
+// 	nu_str = ft_calloc_for_str(ft_strchrlen(old_str, '\0') + ft_strchrlen(arr, '\0') + 1);
+// 	if (nu_str)
+// 	{
+// 		i = 0;
+// 		j = 0;
+// 		while (str1[j] != '\0')
+// 			nu_str[i++] = str1[j++];
+// 		j = 0;
+// 		while (str2[j] != '\0')
+// 			nu_str[i++] = str2[j++];
+// 		nu_str[i] = '\0';
+// 	}
+// 	free_null_str(&old_str);
+// 	return (nu_str);
+// }
+// 	// i = ft_strlen(str1);
+// 	// j = ft_strlen(str2);
+// 		// nu_str = strcpy(nu_str, str1);
