@@ -84,24 +84,23 @@ static char	*read_and_save(int fd, char *saved, t_id *id)
 {
 	char	buf[BUFFER_SIZE];
 	char	*tmp;
+	ssize_t	read_len;
 
 	while (1)
 	{
 		ft_bzero(buf, BUFFER_SIZE);
-		if (read(fd, buf, BUFFER_SIZE) == -1)
+		read_len = read(fd, buf, BUFFER_SIZE);
+		if (read_len == -1)
 			return (NULL);
+		if (read_len == 0)
+			return (saved);
 		saved = ft_strjoin(saved, buf);
 		if (saved == NULL)
-			break ;
+			return (NULL);
 		*next_line = ft_strchrlen(saved, '\n');
 		if (*next_line >= 0)
-			break ;
+			return (saved);
 	}
-	if (id->rd_len == -1)
-		return (NULL);
-	else if (ft_strchr(save, '\n') != NULL)
-		id->terminal = '\n';
-	return (save);
 }
 
 //22L
