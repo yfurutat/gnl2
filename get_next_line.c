@@ -17,9 +17,10 @@
 // # endif
 
 static void	id_initializer(t_id *id);
-static char	*read_and_save(int fd, char *saved, t_id *id);
-static char	*line_arranger(char *jointed, t_id *id);
-static char	*save_the_rest(char *jointed, t_id *id);
+static char	*_read_and_save(int fd, char *saved, ssize_t *next_line);
+static char	*__ft_strjoin_for_gnl(char *old_str, const char *arr);
+static char	*_arrange_line(char *jointed, t_id *id);
+static char	*_save_the_rest(char *jointed, t_id *id);
 
 //13L
 /**
@@ -37,7 +38,7 @@ char	*get_next_line(int fd)
 	char		*line_to_print;
 	ssize_t		next_line;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || fd > FOPEN_MAX || BUFFER_SIZE <= 0 || BUFFER_SIZE >= SSIZE_MAX)
 		return (NULL);
 	next_line = -1;
 	jointed = read_and_joint(fd, saved, &next_line);
@@ -59,13 +60,13 @@ char	*get_next_line(int fd)
  * 
  * @param id the struct contains index to make funcs more concise & go easier.
  */
-static void	id_initializer(t_id *id)
-{
-	id->terminal = '\0';
-	id->rd_len = 0;
-	id->len = 0;
-	id->i = 0;
-}
+// static void	id_initializer(t_id *id)
+// {
+// 	id->terminal = '\0';
+// 	id->rd_len = 0;
+// 	id->len = 0;
+// 	id->i = 0;
+// }
 
 //22L
 /**
@@ -80,7 +81,7 @@ static void	id_initializer(t_id *id)
  * @param id set of index, including rd_len
  * @return char* 
  */
-static char	*read_and_save(int fd, char *saved, t_id *id)
+static char	*_read_and_save(int fd, char *saved, t_id *id)
 {
 	char	buf[BUFFER_SIZE];
 	char	*tmp;
@@ -104,7 +105,7 @@ static char	*read_and_save(int fd, char *saved, t_id *id)
 }
 
 //22L
-char	*ft_strjoin(char *old_str, const char *arr)
+static char	*__ft_strjoin_for_gnl(char *old_str, const char *arr)
 {
 	char	*nu_str;
 	size_t	old_str_len;
