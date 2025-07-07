@@ -99,6 +99,7 @@ char	*ft_calloc_for_str(size_t num_bytes_to_allocate)
 	return (tmp);
 }
 
+// char	*double_free_null_str(char **str1, char **str2, int num_for_error, int scope)
 char	*double_free_null_str(char **str1, char **str2)
 {
 	if (str1 && *str1)
