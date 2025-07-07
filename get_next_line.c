@@ -55,32 +55,6 @@ char	*get_next_line(int fd)
 	return (line_to_print);
 }
 
-/**
- * @brief initialize all the elements in the struct.
- * 
- * @param id the struct contains index to make funcs more concise & go easier.
- */
-// static void	id_initializer(t_id *id)
-// {
-// 	id->terminal = '\0';
-// 	id->rd_len = 0;
-// 	id->len = 0;
-// 	id->i = 0;
-// }
-
-//22L
-/**
- * @brief read lines from the fd by the BUFFER_SIZE,
- * 			and put them into *buf, before copying them into save.
- * 			if any lines remain in *save, put them before the new lines
- * 			into save and combine them altogether.
- * 
- * @param fd file descriptor given through the input of g_n_l()
- * @param save if a line remains after the last process, 
- * 				it is carried over in this array.
- * @param id set of index, including rd_len
- * @return char* 
- */
 static char	*_read_and_save(int fd, char *saved, t_id *id)
 {
 	char	buf[BUFFER_SIZE];
@@ -128,6 +102,82 @@ static char	*__ft_strjoin_for_gnl(char *old_str, const char *arr)
 	return (nu_str);
 }
 
+static char	*_arrange_line(char *jointed, t_id *id);
+{
+	char	*line;
+
+	id->i = 0;
+	if (save[id->i] == '\0' || save == NULL)
+		return (NULL);
+	id->len = 0;
+	while (save[id->len] != id->terminal)
+		id->len++;
+	if (id->terminal == '\n')
+		line = (char *)malloc(sizeof(char) * (id->len + 2));
+	else
+		line = (char *)malloc(sizeof(char) * (id->len + 1));
+	if (line == NULL)
+		free(save);
+	else
+	{
+		while (id->i < id->len + 1)
+		{
+			line[id->i] = save[id->i];
+			id->i += 1;
+		}
+		if (id->terminal == '\n')
+			line[id->i] = '\0';
+	}
+	return (line);
+}
+
+static char	*_save_the_rest(char *jointed, t_id *id)
+{
+	char	*for_next;
+
+	for_next = NULL;
+	if (save && id->terminal == '\n')
+	{
+		for_next = (char *)malloc(ft_strlen(save) - id->len + 1);
+		if (for_next)
+		{
+			id->len++;
+			id->i = 0;
+			while (save[id->len] != '\0')
+				for_next[id->i++] = save[id->len++];
+			for_next[id->i] = '\0';
+		}
+	}
+	free(save);
+	return (for_next);
+}
+
+/**
+ * @brief initialize all the elements in the struct.
+ * 
+ * @param id the struct contains index to make funcs more concise & go easier.
+ */
+// static void	id_initializer(t_id *id)
+// {
+// 	id->terminal = '\0';
+// 	id->rd_len = 0;
+// 	id->len = 0;
+// 	id->i = 0;
+// }
+
+//22L
+/**
+ * @brief read lines from the fd by the BUFFER_SIZE,
+ * 			and put them into *buf, before copying them into save.
+ * 			if any lines remain in *save, put them before the new lines
+ * 			into save and combine them altogether.
+ * 
+ * @param fd file descriptor given through the input of g_n_l()
+ * @param save if a line remains after the last process, 
+ * 				it is carried over in this array.
+ * @param id set of index, including rd_len
+ * @return char* 
+ */
 // static char	*read_and_save(int fd, char *save, t_id *id)
 // {
 // 	char	*buf;
@@ -163,34 +213,34 @@ static char	*__ft_strjoin_for_gnl(char *old_str, const char *arr)
  * @return char* line created through this func, 
  * 			which will be returned in the end of g_n_l(), too.
  */
-static char	*line_arranger(char *save, t_id *id)
-{
-	char	*line;
+// static char	*line_arranger(char *save, t_id *id)
+// {
+// 	char	*line;
 
-	id->i = 0;
-	if (save[id->i] == '\0' || save == NULL)
-		return (NULL);
-	id->len = 0;
-	while (save[id->len] != id->terminal)
-		id->len++;
-	if (id->terminal == '\n')
-		line = (char *)malloc(sizeof(char) * (id->len + 2));
-	else
-		line = (char *)malloc(sizeof(char) * (id->len + 1));
-	if (line == NULL)
-		free(save);
-	else
-	{
-		while (id->i < id->len + 1)
-		{
-			line[id->i] = save[id->i];
-			id->i += 1;
-		}
-		if (id->terminal == '\n')
-			line[id->i] = '\0';
-	}
-	return (line);
-}
+// 	id->i = 0;
+// 	if (save[id->i] == '\0' || save == NULL)
+// 		return (NULL);
+// 	id->len = 0;
+// 	while (save[id->len] != id->terminal)
+// 		id->len++;
+// 	if (id->terminal == '\n')
+// 		line = (char *)malloc(sizeof(char) * (id->len + 2));
+// 	else
+// 		line = (char *)malloc(sizeof(char) * (id->len + 1));
+// 	if (line == NULL)
+// 		free(save);
+// 	else
+// 	{
+// 		while (id->i < id->len + 1)
+// 		{
+// 			line[id->i] = save[id->i];
+// 			id->i += 1;
+// 		}
+// 		if (id->terminal == '\n')
+// 			line[id->i] = '\0';
+// 	}
+// 	return (line);
+// }
 
 //17L
 /**
@@ -202,23 +252,23 @@ static char	*line_arranger(char *save, t_id *id)
  * @return char* the rest of the lines saved 
  * 			after creating the line to output.
  */
-static char	*save_the_rest(char *save, t_id *id)
-{
-	char	*for_next;
+// static char	*save_the_rest(char *save, t_id *id)
+// {
+// 	char	*for_next;
 
-	for_next = NULL;
-	if (save && id->terminal == '\n')
-	{
-		for_next = (char *)malloc(ft_strlen(save) - id->len + 1);
-		if (for_next)
-		{
-			id->len++;
-			id->i = 0;
-			while (save[id->len] != '\0')
-				for_next[id->i++] = save[id->len++];
-			for_next[id->i] = '\0';
-		}
-	}
-	free(save);
-	return (for_next);
-}
+// 	for_next = NULL;
+// 	if (save && id->terminal == '\n')
+// 	{
+// 		for_next = (char *)malloc(ft_strlen(save) - id->len + 1);
+// 		if (for_next)
+// 		{
+// 			id->len++;
+// 			id->i = 0;
+// 			while (save[id->len] != '\0')
+// 				for_next[id->i++] = save[id->len++];
+// 			for_next[id->i] = '\0';
+// 		}
+// 	}
+// 	free(save);
+// 	return (for_next);
+// }
