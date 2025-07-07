@@ -39,7 +39,10 @@ char	*get_next_line(int fd)
 	ssize_t		next_line;
 
 	if (fd < 0 || fd > FOPEN_MAX || BUFFER_SIZE <= 0 || BUFFER_SIZE >= SSIZE_MAX)
+	{
+		errno = EINVAL;
 		return (NULL);
+	}
 	next_line = -1;
 	jointed = read_and_joint(fd, saved, &next_line);
 	if (!jointed)
