@@ -44,14 +44,14 @@ char	*get_next_line(int fd)
 		return (NULL);
 	}
 	next_line = -1;
-	jointed = read_and_joint(fd, saved, &next_line);
+	jointed = _read_and_joint(fd, saved, &next_line);
 	if (!jointed)
 		return (double_free_null_str(&saved, NULL));
 	double_free_null_str(&saved, NULL);
-	line_to_print = arrange_line(jointed, &next_line);
+	line_to_print = _arrange_line(jointed, &next_line);
 	if (!line_to_print)
 		return (double_free_null_str(&saved, &jointed));
-	saved = save_the_rest(jointed, &next_line);
+	saved = _save_the_rest(jointed, &next_line);
 	if (!saved)
 		return (double_free_null_str(&line_to_print, &jointed));
 	double_free_null_str(NULL, &jointed);
@@ -105,7 +105,7 @@ static char	*__ft_strjoin_for_gnl(char *old_str, const char *arr)
 	return (nu_str);
 }
 
-static char	*_arrange_line(char *jointed, t_id *id);
+static char	*_arrange_line(char *jointed, ssize_t *next_line)
 {
 	char	*line;
 
@@ -134,7 +134,7 @@ static char	*_arrange_line(char *jointed, t_id *id);
 	return (line);
 }
 
-static char	*_save_the_rest(char *jointed, t_id *id)
+static char	*_save_the_rest(char *jointed, ssize_t *next_line)
 {
 	char	*for_next;
 
@@ -142,6 +142,7 @@ static char	*_save_the_rest(char *jointed, t_id *id)
 	if (save && id->terminal == '\n')
 	{
 		for_next = (char *)malloc(ft_strlen(save) - id->len + 1);
+		for_next = ft_calloc_for_str(1);
 		if (for_next)
 		{
 			id->len++;
