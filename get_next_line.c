@@ -16,7 +16,7 @@
 // #  define BUFFER_SIZE (size_t)(1000)
 // # endif
 
-static void	id_initializer(t_id *id);
+// static void	id_initializer(t_id *id);
 static char	*_read_and_save(int fd, char *saved, ssize_t *next_line);
 static char	*__ft_strjoin_for_gnl(char *old_str, const char *arr);
 static char	*_arrange_line(char *jointed, t_id *id);
