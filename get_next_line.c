@@ -72,7 +72,7 @@ static char	*_read_and_save(int fd, char *saved, t_id *id)
 			return (NULL);
 		else if (read_len == 0)
 			return (saved);
-		saved = ft_strjoin(saved, buf);
+		saved = ft_strjoin_for_gnl(saved, buf);
 		if (saved == NULL)
 			return (NULL);
 		*next_line = ft_strchrlen(saved, '\n');
@@ -137,22 +137,15 @@ static char	*_arrange_line(char *jointed, ssize_t *next_line)
 static char	*_save_the_rest(char *jointed, ssize_t *next_line)
 {
 	char	*for_next;
+	size_t	start;
 
-	for_next = NULL;
-	if (save && id->terminal == '\n')
-	{
-		for_next = (char *)malloc(ft_strlen(save) - id->len + 1);
-		for_next = ft_calloc_for_str(1);
-		if (for_next)
-		{
-			id->len++;
-			id->i = 0;
-			while (save[id->len] != '\0')
-				for_next[id->i++] = save[id->len++];
-			for_next[id->i] = '\0';
-		}
-	}
-	free(save);
+	if (!jointed || *next_line < 0)
+		return (NULL);
+	for_next = ft_calloc_for_str(ft_strlen(save) - *next_line + 1);
+	if (!for_next)
+		return (NULL);
+	start = (size_t)*next_line + 1;
+	iter_copy_src_to_dest(for_next, &jointed[start], SIZE_MAX);
 	return (for_next);
 }
 
