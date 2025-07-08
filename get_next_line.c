@@ -72,7 +72,7 @@ static char	*_read_and_save(int fd, char *saved, t_id *id)
 			return (NULL);
 		else if (read_len == 0)
 			return (saved);
-		saved = ft_strjoin_for_gnl(saved, buf);
+		saved = __ft_strjoin_for_gnl(saved, buf);
 		if (saved == NULL)
 			return (NULL);
 		*next_line = ft_strchrlen(saved, '\n');
