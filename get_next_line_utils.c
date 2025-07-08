@@ -55,7 +55,10 @@ ssize_t	ft_strchrlen(const char *str, int chr)
 	ssize_t	len;
 
 	if (str == NULL)
+	{
+		errno = EINVAL;
 		return (NULL_PTR);
+	}
 	len = 0;
 	while (str[len] != '\0')
 	{
@@ -120,7 +123,7 @@ void	iter_copy_src_to_dest(char *dest, const char *src, size_t end)
 	size_t	i;
 
 	i = 0;
-	while (end > i + 1 && src[i] != '\0')
+	while (i + 1 < end && src[i] != '\0')
 	{
 		dest[i] = src[i];
 		i += 1;
