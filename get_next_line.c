@@ -3,26 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yfurutat <yfurutat@student.42.fr>          +#+  +:+       +#+        */
+/*   By: efmacm23 <efmacm23@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/30 20:07:31 by yuske             #+#    #+#             */
-/*   Updated: 2023/01/20 20:28:11 by yfurutat         ###   ########.fr       */
+/*   Updated: 2025/07/09 03:49:59 by efmacm23         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-// # ifndef BUFFER_SIZE
-// #  define BUFFER_SIZE (size_t)(1000)
-// # endif
-
-// static void	id_initializer(t_id *id);
-static char	*_read_and_save(int fd, char *saved, ssize_t *next_line);
+static char	*_read_and_joint(int fd, char *saved, ssize_t *next_line);
 static char	*__ft_strjoin_for_gnl(char *old_str, const char *arr);
-static char	*_arrange_line(char *jointed, t_id *id);
-static char	*_save_the_rest(char *jointed, t_id *id);
+static char	*_arrange_line(char *jointed, ssize_t *next_line);
+static char	*_save_the_rest(char *jointed, ssize_t *next_line);
 
-//13L
+// 24L
 /**
  * @brief Get the lines from fd by the BUFFER_SIZE,
  * 			and arrange them with '\n' if needed.
@@ -38,7 +33,8 @@ char	*get_next_line(int fd)
 	char		*line_to_print;
 	ssize_t		next_line;
 
-	if (fd < 0 || fd > FOPEN_MAX || BUFFER_SIZE <= 0 || BUFFER_SIZE >= SSIZE_MAX)
+	if (fd < 0 || fd > FOPEN_MAX || \
+		BUFFER_SIZE <= 0 || BUFFER_SIZE >= SSIZE_MAX)
 	{
 		errno = EINVAL;
 		return (NULL);
@@ -47,21 +43,21 @@ char	*get_next_line(int fd)
 	jointed = _read_and_joint(fd, saved, &next_line);
 	if (!jointed)
 		return (double_free_null_str(&saved, NULL));
-	double_free_null_str(&saved, NULL);
+	// double_free_null_str(&saved, NULL);
 	line_to_print = _arrange_line(jointed, &next_line);
 	if (!line_to_print)
 		return (double_free_null_str(&saved, &jointed));
 	saved = _save_the_rest(jointed, &next_line);
-	if (!saved)
+	if (next_line >= 0 && !saved)
 		return (double_free_null_str(&line_to_print, &jointed));
 	double_free_null_str(NULL, &jointed);
 	return (line_to_print);
 }
 
-static char	*_read_and_save(int fd, char *saved, t_id *id)
+// 19L
+static char	*_read_and_joint(int fd, char *saved, ssize_t *next_line)
 {
 	char	buf[BUFFER_SIZE];
-	char	*tmp;
 	ssize_t	read_len;
 
 	while (1)
@@ -69,7 +65,7 @@ static char	*_read_and_save(int fd, char *saved, t_id *id)
 		ft_bzero(buf, BUFFER_SIZE);
 		read_len = read(fd, buf, BUFFER_SIZE);
 		if (read_len == -1)
-			return (NULL);
+			return (double_free_null_str(&saved, NULL));
 		else if (read_len == 0)
 			return (saved);
 		saved = __ft_strjoin_for_gnl(saved, buf);
@@ -81,7 +77,7 @@ static char	*_read_and_save(int fd, char *saved, t_id *id)
 	}
 }
 
-//22L
+// 19L
 static char	*__ft_strjoin_for_gnl(char *old_str, const char *arr)
 {
 	char	*nu_str;
@@ -105,49 +101,49 @@ static char	*__ft_strjoin_for_gnl(char *old_str, const char *arr)
 	return (nu_str);
 }
 
+// 19L
 static char	*_arrange_line(char *jointed, ssize_t *next_line)
 {
 	char	*line;
+	ssize_t	len;
 
-	id->i = 0;
-	if (save[id->i] == '\0' || save == NULL)
+	if (jointed == NULL || jointed[0] == '\0')
 		return (NULL);
-	id->len = 0;
-	while (save[id->len] != id->terminal)
-		id->len++;
-	if (id->terminal == '\n')
-		line = (char *)malloc(sizeof(char) * (id->len + 2));
+	if (*next_line >= 0)
+		len = *next_line;
 	else
-		line = (char *)malloc(sizeof(char) * (id->len + 1));
+		len = ft_strchrlen(jointed, '\0');
+	if (*next_line >= 0)
+		line = ft_calloc_for_str(len + 2);
+	else
+		line = ft_calloc_for_str(len + 1);
 	if (line == NULL)
-		free(save);
-	else
-	{
-		while (id->i < id->len + 1)
-		{
-			line[id->i] = save[id->i];
-			id->i += 1;
-		}
-		if (id->terminal == '\n')
-			line[id->i] = '\0';
-	}
+		return (NULL);
+	iter_copy_src_to_dest(line, jointed, len);
+	if (*next_line >= 0)
+		line[len] = '\n';
 	return (line);
 }
 
+// 13L
 static char	*_save_the_rest(char *jointed, ssize_t *next_line)
 {
 	char	*for_next;
-	size_t	start;
+	ssize_t	start;
+	ssize_t	alloc_len_for_the_rest;
 
 	if (!jointed || *next_line < 0)
 		return (NULL);
-	for_next = ft_calloc_for_str(ft_strlen(save) - *next_line + 1);
+	start = *next_line + 1;
+	alloc_len_for_the_rest = ft_strchrlen(&jointed[start], '\0') + 1;
+	for_next = ft_calloc_for_str(alloc_len_for_the_rest);
 	if (!for_next)
 		return (NULL);
-	start = (size_t)*next_line + 1;
 	iter_copy_src_to_dest(for_next, &jointed[start], SIZE_MAX);
 	return (for_next);
 }
+
+// static void	id_initializer(t_id *id);
 
 /**
  * @brief initialize all the elements in the struct.

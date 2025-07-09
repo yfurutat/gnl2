@@ -3,62 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yuske <yuske@student.42.fr>                +#+  +:+       +#+        */
+/*   By: efmacm23 <efmacm23@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/30 20:07:37 by yuske             #+#    #+#             */
-/*   Updated: 2023/01/18 01:28:00 by yuske            ###   ########.fr       */
+/*   Updated: 2025/07/09 03:30:35 by efmacm23         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
-// // 8L
-// char	*ft_strchr(char *str, int chr)
-// {
-// 	if (str != NULL)
-// 	{
-// 		while (*str != (unsigned char)chr && *str != '\0')
-// 			str++;
-// 		if (*str == (unsigned char)chr)
-// 			return ((char *)str);
-// 	}
-// 	return (NULL);
-// }
-
-// //6L
-// size_t	ft_strlen(const char *str)
-// {
-// 	size_t	len;
-
-// 	len = 0;
-// 	while (str != NULL && str[len] != '\0')
-// 		len += 1;
-// 	return (len);
-// }
-
-#include <stdbool.h> //bool
-#include <stdio.h> // ssize_t (#include <stdlib.h> でもOK)
-#include <limits.h> // SSIZE_MAX
-
-// #define NOT_FOUND (-1)
-// #define NOT_LOOKED (-2)
-// #define NULL_PTR (-3)
-
-typedef enum s_error_type
-{
-	NOT_FOUND = -1,
-	NULL_PTR = -2
-}	t_err;
 
 ssize_t	ft_strchrlen(const char *str, int chr)
 {
 	ssize_t	len;
 
 	if (str == NULL)
-	{
-		errno = EINVAL;
 		return (NULL_PTR);
-	}
 	len = 0;
 	while (str[len] != '\0')
 	{
@@ -102,7 +61,6 @@ char	*ft_calloc_for_str(size_t num_bytes_to_allocate)
 	return (tmp);
 }
 
-// char	*double_free_null_str(char **str1, char **str2, int num_for_error, int scope)
 char	*double_free_null_str(char **str1, char **str2)
 {
 	if (str1 && *str1)
@@ -123,12 +81,15 @@ void	iter_copy_src_to_dest(char *dest, const char *src, size_t end)
 	size_t	i;
 
 	i = 0;
-	while (i + 1 < end && src[i] != '\0')
+	while (i < end && src[i] != '\0')
 	{
 		dest[i] = src[i];
 		i += 1;
 	}
+	dest[i] = '\0';
 }
+
+// char	*double_free_null_str(char **str1, char **str2, int num_for_error, int scope)
 
 //16L
 // char	*ft_strdup(const char *str)
@@ -179,3 +140,27 @@ void	iter_copy_src_to_dest(char *dest, const char *src, size_t end)
 // 	// i = ft_strlen(str1);
 // 	// j = ft_strlen(str2);
 // 		// nu_str = strcpy(nu_str, str1);
+
+// // 8L
+// char	*ft_strchr(char *str, int chr)
+// {
+// 	if (str != NULL)
+// 	{
+// 		while (*str != (unsigned char)chr && *str != '\0')
+// 			str++;
+// 		if (*str == (unsigned char)chr)
+// 			return ((char *)str);
+// 	}
+// 	return (NULL);
+// }
+
+// //6L
+// size_t	ft_strlen(const char *str)
+// {
+// 	size_t	len;
+
+// 	len = 0;
+// 	while (str != NULL && str[len] != '\0')
+// 		len += 1;
+// 	return (len);
+// }
